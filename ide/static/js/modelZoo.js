@@ -2,45 +2,124 @@ import React from 'react';
 import ModelElement from './modelElement';
 
 class ModelZoo extends React.Component {
+
+  constructor() {
+      super();
+      this.state = {
+        toDisplay:3,
+        toAddPerClick:5,
+        Recognition:{ 
+                      currentPage:0,
+                      models:[
+                              ["caffe","lenet","MNIST LeNet"],
+                              ["caffe","cifar10_full","Cifar10 CNN"],
+                              ["caffe","alexnet","AlexNet"],
+                              ["caffe","All_CNN","All CNN"],
+                              ["caffe","vgg16","VGG 16"],
+                              ["caffe","densenet","DenseNet"],
+                              ["caffe","GoogleNet","GoogLeNet"],
+                              ["caffe","resnet101","ResNet 101"],
+                              ["keras","v3","Inception V3"],
+                              ["caffe","Squeezenet","Squeezenet"],
+                              ["caffe","SENet","SENet"],
+                              ["keras","imdb_cnn_lstm","IMDB CNN LSTM"]
+                            ] 
+                  },
+        Detection:{ 
+                    currentPage:0,
+                    models: [
+                              ["caffe","vanilla","Vanilla CNN"],
+                              ["caffe","fcn","FCN32 Pascal"],
+                              ["caffe","yolo_net","YOLONet"],
+                              ["caffe","HED","HED"] 
+                            ]
+                  }
+      };
+      this.handleClick = this.handleClick.bind(this);
+    
+  }
+
+  handleClick(event){
+    var id = event.target.id
+    if (id == "Recognition")
+    {
+        var recognition = this.state.Recognition
+        var used = recognition.currentPage*this.state.toAddPerClick + this.state.toDisplay
+        if(used<=recognition.length)
+        {
+          this.setState({
+            currentPage: this.state.Recognition.currentPage+1
+          });
+        }
+        else
+         {
+          this.setState({
+            currentPage: 0
+          });
+        } 
+    }
+    if (id == "Detection")
+    {
+        var detection = this.state.Detection
+        used = detection.currentPage*this.state.toAddPerClick + this.state.toDisplay
+        if(used<=detection.length)
+        {
+          this.setState({
+            currentPage: this.state.Detection.currentPage+1
+          });
+        }
+        else
+         {
+          this.setState({
+            currentPage: 0
+          });
+        } 
+    }    
+  }
+
   render() {
+
+    const startIndex = 0;
+
+    const recognition = this.state.Recognition.models;
+    const detection = this.state.Detection.models;
+
+    const finalRecognitionIndex = this.state.toDisplay + this.state.Recognition.currentPage*this.state.toAddPerClick;
+    const slicedRecogntion = recognition.slice(startIndex, finalRecognitionIndex);
+    const renderRecognition = slicedRecogntion.map((recognition) => {
+      return (  
+        <div>
+          <ModelElement importNet = {this.props.importNet} framework =
+                      {recognition[0]} id = {recognition[1]}> {recognition[2]} </ModelElement>
+          <br/>
+        </div>
+        );
+    });
+
+    const finalDetectionIndex = this.state.toDisplay + this.state.Detection.currentPage*this.state.toAddPerClick;
+    const slicedDetection = detection.slice(startIndex, finalDetectionIndex);
+    const renderDetection = slicedDetection.map((detection) => {
+      return (  
+        <div>
+          <ModelElement importNet = {this.props.importNet} framework =
+                      {detection[0]} id = {detection[1]}> {detection[2]} </ModelElement>
+          <br/>
+        </div>
+        );
+    })
+
+
     return (
       <div className="zoo-modal">
         <div className="centered-zoo-modal">
           <div className="zoo-modal-model">
             <h3 className="zoo-modal-text">Recognition</h3>
-              <ModelElement importNet={this.props.importNet} framework="caffe" id="lenet">MNIST LeNet</ModelElement>
-              <br/>
-              <ModelElement importNet={this.props.importNet} framework="caffe" id="cifar10_full">Cifar10 CNN</ModelElement>
-              <br/>
-              <ModelElement importNet={this.props.importNet} framework="caffe" id="alexnet">AlexNet</ModelElement>
-              <br/>
-              <ModelElement importNet={this.props.importNet} framework="caffe" id="All_CNN">All CNN</ModelElement>
-              <br/>
-              <ModelElement importNet={this.props.importNet} framework="caffe" id="vgg16">VGG 16</ModelElement>
-              <br/>
-              <ModelElement importNet={this.props.importNet} framework="caffe" id="densenet">DenseNet</ModelElement>
-              <br/>
-              <ModelElement importNet={this.props.importNet} framework="caffe" id="GoogleNet">GoogLeNet</ModelElement>
-              <br/>
-              <ModelElement importNet={this.props.importNet} framework="caffe" id="resnet101">ResNet 101</ModelElement>
-              <br/>
-              <ModelElement importNet={this.props.importNet} framework="keras" id="v3">Inception V3</ModelElement>
-              <br/>
-              <ModelElement importNet={this.props.importNet} framework="caffe" id="Squeezenet">Squeezenet</ModelElement>
-              <br/>
-              <ModelElement importNet={this.props.importNet} framework="caffe" id="SENet">SENet</ModelElement>
-              <br/>
-              <ModelElement importNet={this.props.importNet} framework="keras" id="imdb_cnn_lstm">IMDB CNN LSTM</ModelElement>
+            {renderRecognition}
           </div>
+
           <div className="zoo-modal-model">
             <h3 className="zoo-modal-text">Detection</h3>
-            <ModelElement importNet={this.props.importNet} framework="caffe" id="vanilla">Vanilla CNN</ModelElement>
-              <br/>
-              <ModelElement importNet={this.props.importNet} framework="caffe" id="fcn">FCN32 Pascal</ModelElement>
-              <br/>
-              <ModelElement importNet={this.props.importNet} framework="caffe" id="yolo_net">YOLONet</ModelElement>
-              <br/>
-              <ModelElement importNet={this.props.importNet} framework="caffe" id="HED">HED</ModelElement>
+              {renderDetection}
             <h3 className="zoo-modal-text">Retrieval</h3>
               <ModelElement importNet={this.props.importNet} framework="caffe" id="siamese_mnist">MNIST Siamese</ModelElement>
           </div>
