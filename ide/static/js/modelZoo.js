@@ -7,22 +7,27 @@ class ModelZoo extends React.Component {
       super();
       this.state = {
         toDisplay:5,
-        toAddPerClick:3,
+        toAddPerClick:5,
         Recognition:{ 
                       currentPage:0,
                       models:[
-                              ["caffe","lenet","MNIST LeNet"],
-                              ["caffe","cifar10_full","Cifar10 CNN"],
-                              ["caffe","GoogleNet","GoogLeNet"],
                               ["keras","v3","Inception V3"],
+                              ["caffe","GoogleNet","GoogLeNet"],
                               ["caffe","alexnet","AlexNet"],
-                              ["caffe","All_CNN","All CNN"],
                               ["caffe","vgg16","VGG 16"],
                               ["caffe","densenet","DenseNet"],
+                              ["caffe","lenet","MNIST LeNet"],
+                              ["caffe","cifar10_full","Cifar10 CNN"],
+                              ["keras","imdb_cnn_lstm","IMDB CNN LSTM"],
+                              ["caffe","All_CNN","All CNN"],
+                              ["caffe","Caffenet","Caffenet"],
+                              ["caffe","CNDS","CNDS"],
+                              ["caffe","Gender","Gender"],
+                              ["caffe","Age","Age"],
+                              ["caffe","network_in_network","Network in Network"],
                               ["caffe","resnet101","ResNet 101"],
                               ["caffe","Squeezenet","Squeezenet"],
-                              ["caffe","SENet","SENet"],
-                              ["keras","imdb_cnn_lstm","IMDB CNN LSTM"]
+                              ["caffe","SENet","SENet"]
                             ] 
                   },
         Detection:{ 
