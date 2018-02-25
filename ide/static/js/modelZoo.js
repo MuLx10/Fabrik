@@ -7,8 +7,9 @@ class ModelZoo extends React.Component {
       super();
       this.state = {
         toAddPerClick:5,
+        open:0,
+        text:"Load More",
         Recognition:{ 
-                      currentPage:0,
                       toDisplay:6,
                       models:[
                               ["keras","v3","Inception V3"],
@@ -32,7 +33,6 @@ class ModelZoo extends React.Component {
                             ] 
                   },
         Detection:{ 
-                    currentPage:0,
                     toDisplay:3,
                     models: [
                               ["caffe","yolo_net","YOLONet"],
@@ -41,85 +41,115 @@ class ModelZoo extends React.Component {
                               ["caffe","fcn","FCN32 Pascal"],
                               ["caffe","48Net","48Net"]
                             ]
-                  }
+                  },
+        Seq2Seq:{
+                  toDisplay:3,
+                  models:[
+                          ["keras","textGeneration","Text Generation"],
+                          ["keras","seq2seq_lang","Seq2Seq Translation"],
+                          ["caffe","pix2pix","Pix2Pix"]
+                        ]
+
+                },
+        VQA    :{
+                  toDisplay:3,
+                  models:[
+                            ["keras","VQA","VQA"],
+                            ["keras","VQA2","VQA2"],
+                            ["caffe","mlpVQA","VQS"]
+                          ]
+                },
+        Segmentation:{
+                    toDisplay:2,
+                    models:[
+                              ["caffe","fcn2","Semantic Segmentation"],
+                              ["keras","ZF_UNET_224","UNET"]
+                            ]
+                }
       };
       this.handleClick = this.handleClick.bind(this);
     
   }
 
   handleClick(event){
-  
-    var id = event.target.id
-    if (id == "Recognition")
-    {
-        var task = this.state.Recognition
-        var used = task.currentPage*this.state.toAddPerClick;
-        if(used<=task.models.length)
-        {
-          task.currentPage = task.currentPage+1
-          this.setState({
-            Recognition: task
-          });
-        }
-        else
-         {
-          task.currentPage = 0
-          this.setState({
-            Recognition:task
-          });
-        } 
+    if(this.state.open){
+      this.setState({text:"Load More"});
     }
-    if (id == "Detection")
-    {
-        task = this.state.Detection;
-        used = task.currentPage*this.state.toAddPerClick ;
-        if(used<=task.models.length)
-        {
-          task.currentPage = task.currentPage+1;
-          this.setState({
-            Detection: task
-          });
-        }
-        else
-         {
-          task.currentPage = 0;
-          this.setState({
-            Detection: task
-          });
-        } 
-    }   
+    else{
+      this.setState({text:"Load Less"}); 
+    }
+    if (event.target.id =="change")
+      this.setState({open:1-this.state.open});
   }
 
   render() {
 
     const startIndex = 0;
 
-    const recognition = this.state.Recognition.models;
-    const detection = this.state.Detection.models;
-
-    const finalRecognitionIndex = this.state.Recognition.toDisplay + this.state.Recognition.currentPage*this.state.toAddPerClick;
-    const slicedRecogntion = recognition.slice(startIndex, finalRecognitionIndex);
-    const renderRecognition = slicedRecogntion.map((recognition) => {
+    var category = this.state.Recognition;
+    var finalIndex = category.toDisplay*(1 - this.state.open)+this.state.open*category.models.length;
+    var sliced = category.models.slice(startIndex, finalIndex);
+    const renderRecognition = sliced.map((category) => {
       return (  
         <div>
           <ModelElement importNet = {this.props.importNet} framework =
-                      {recognition[0]} id = {recognition[1]}> {recognition[2]} </ModelElement>
+                      {category[0]} id = {category[1]}> {category[2]} </ModelElement>
           <br/>
         </div>
         );
     });
 
-    const finalDetectionIndex = this.state.Detection.toDisplay + this.state.Detection.currentPage*this.state.toAddPerClick;
-    const slicedDetection = detection.slice(startIndex, finalDetectionIndex);
-    const renderDetection = slicedDetection.map((detection) => {
+    category = this.state.Detection;
+    finalIndex = category.toDisplay*(1 - this.state.open)+this.state.open*category.models.length;
+    sliced = category.models.slice(startIndex, finalIndex);
+    const renderDetection = sliced.map((category) => {
       return (  
         <div>
           <ModelElement importNet = {this.props.importNet} framework =
-                      {detection[0]} id = {detection[1]}> {detection[2]} </ModelElement>
+                      {category[0]} id = {category[1]}> {category[2]} </ModelElement>
           <br/>
         </div>
         );
-    })
+    });
+
+    category = this.state.Seq2Seq;
+    finalIndex = category.toDisplay*(1 - this.state.open)+this.state.open*category.models.length;
+    sliced = category.models.slice(startIndex, finalIndex);
+    const renderSeq2Seq = sliced.map((category) => {
+      return (  
+        <div>
+          <ModelElement importNet = {this.props.importNet} framework =
+                      {category[0]} id = {category[1]}> {category[2]} </ModelElement>
+          <br/>
+        </div>
+        );
+    });
+
+    category = this.state.Segmentation;
+    finalIndex = category.toDisplay*(1 - this.state.open)+this.state.open*category.models.length;
+    sliced = category.models.slice(startIndex, finalIndex);
+    const renderSegmentation = sliced.map((category) => {
+      return (  
+        <div>
+          <ModelElement importNet = {this.props.importNet} framework =
+                      {category[0]} id = {category[1]}> {category[2]} </ModelElement>
+          <br/>
+        </div>
+        );
+    });
+
+    category = this.state.VQA;
+    finalIndex = category.toDisplay*(1 - this.state.open)+this.state.open*category.models.length;
+    sliced = category.models.slice(startIndex, finalIndex);
+    const renderVQA = sliced.map((category) => {
+      return (  
+        <div>
+          <ModelElement importNet = {this.props.importNet} framework =
+                      {category[0]} id = {category[1]}> {category[2]} </ModelElement>
+          <br/>
+        </div>
+        );
+    });
 
 
     return (
@@ -128,17 +158,12 @@ class ModelZoo extends React.Component {
           <div className="zoo-modal-model">
             <h3 className="zoo-modal-text">Recognition</h3>
             {renderRecognition}
-            <button id="Recognition"  onClick={this.handleClick} >
-              <span className="glyphicon  glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-            </button>
           </div>
 
           <div className="zoo-modal-model">
             <h3 className="zoo-modal-text">Detection</h3>
               {renderDetection}
-              <button id="Detection" onClick={this.handleClick} >
-                <span className="glyphicon  glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-              </button>
+
             <h3 className="zoo-modal-text">Retrieval</h3>
               <ModelElement importNet={this.props.importNet} framework="caffe" id="siamese_mnist">MNIST Siamese</ModelElement>
           </div>
@@ -146,11 +171,8 @@ class ModelZoo extends React.Component {
 
           <div className="zoo-modal-model">
             <h3 className="zoo-modal-text">Seq2Seq</h3>
-              <ModelElement importNet={this.props.importNet} framework="keras" id="textGeneration">Text Generation</ModelElement>
-              <br/>
-              <ModelElement importNet={this.props.importNet} framework="keras" id="seq2seq_lang">Seq2Seq Translation</ModelElement>
-              <br/>
-              <ModelElement importNet={this.props.importNet} framework="caffe" id="pix2pix">Pix2Pix</ModelElement>
+              {renderSeq2Seq}
+
           </div>
 
           <div className="zoo-modal-model">
@@ -159,21 +181,16 @@ class ModelZoo extends React.Component {
             <ModelElement importNet={this.props.importNet} framework="caffe" id="CoCo_Caption">CoCo Caption</ModelElement>
             
             <h3 className="zoo-modal-text">Segmentation</h3>
-            <ModelElement importNet={this.props.importNet} framework="caffe" id="fcn2">Semantic Segmentation</ModelElement>
-            <br/>
-            <ModelElement importNet={this.props.importNet} framework="keras" id="ZF_UNET_224">UNET</ModelElement>
-            
-            <h3 className="zoo-modal-text">Retrieval</h3>
-            <ModelElement importNet={this.props.importNet} framework="caffe" id="siamese_mnist">MNIST Siamese</ModelElement>
-          
+                {renderSegmentation}
+  
             <h3 className="zoo-modal-text">VQA</h3>
-            <ModelElement importNet={this.props.importNet} framework="keras" id="VQA">VQA</ModelElement>
-            <br/>
-            <ModelElement importNet={this.props.importNet} framework="keras" id="VQA2">VQA2</ModelElement>
-            <br/>
-            <ModelElement importNet={this.props.importNet} framework="caffe" id="mlpVQA">VQS</ModelElement>
+              {renderVQA}
           </div>
 
+          <button className="import-textbox-button btn btn-default col-md-2 col-md-offset-5"  
+              id="change" onClick={this.handleClick}>{this.state.text} 
+            &nbsp;<span className="glyphicon  glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+          </button>   
         </div>
       </div>
     );
