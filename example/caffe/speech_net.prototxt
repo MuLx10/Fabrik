@@ -1,48 +1,52 @@
-name: "Age Classification"
+name: "SpeechNet"
 layer {
   name: "blob1"
-  type: "Data"
+  type: "ImageData"
   top: "blob1"
   include {
     phase: TRAIN
   }
   transform_param {
-    scale: 1.0
-    mirror: true
-    crop_size: 227
-    mean_file: "https://github.com/GilLevi/AgeGenderDeepLearning/raw/master/models/mean.binaryproto"
+    scale: 0.00390625
+    mirror: false
+    crop_size: 0
     force_color: false
     force_gray: false
   }
-  data_param {
-    source: "age_train_lmdb"
-    batch_size: 50
+  image_data_param {
+    source: "train_index.txt"
+    batch_size: 32
     rand_skip: 0
-    backend: LMDB
-    prefetch: 4
+    shuffle: false
+    new_height: 0
+    new_width: 0
+    is_color: true
+    root_folder: ""
   }
 }
 layer {
   name: "blob1"
-  type: "Data"
+  type: "ImageData"
   top: "blob1"
   include {
     phase: TEST
   }
   transform_param {
-    scale: 1.0
+    scale: 0.00390625
     mirror: false
-    crop_size: 227
-    mean_file: "https://github.com/GilLevi/AgeGenderDeepLearning/raw/master/models/mean.binaryproto"
+    crop_size: 0
     force_color: false
     force_gray: false
   }
-  data_param {
-    source: "age_val_lmdb"
-    batch_size: 50
+  image_data_param {
+    source: "test_index.txt"
+    batch_size: 1
     rand_skip: 0
-    backend: LMDB
-    prefetch: 4
+    shuffle: false
+    new_height: 0
+    new_width: 0
+    is_color: true
+    root_folder: ""
   }
 }
 layer {
@@ -60,15 +64,15 @@ layer {
     num_output: 96
     bias_term: true
     weight_filler {
-      type: "gaussian"
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
     }
     pad_h: 0
     pad_w: 0
-    kernel_h: 7
-    kernel_w: 7
+    kernel_h: 11
+    kernel_w: 11
     stride_h: 4
     stride_w: 4
     dilation: 1
@@ -76,18 +80,9 @@ layer {
 }
 layer {
   name: "blob3"
-  type: "ReLU"
-  bottom: "blob2"
-  top: "blob2"
-  relu_param {
-    negative_slope: 0.0
-  }
-}
-layer {
-  name: "blob4"
   type: "Pooling"
   bottom: "blob2"
-  top: "blob4"
+  top: "blob3"
   pooling_param {
     pool: MAX
     kernel_h: 3
@@ -99,23 +94,10 @@ layer {
   }
 }
 layer {
-  name: "blob5"
-  type: "LRN"
-  bottom: "blob4"
-  top: "blob4"
-  lrn_param {
-    local_size: 5
-    alpha: 9.99999974738e-05
-    beta: 0.75
-    norm_region: ACROSS_CHANNELS
-    k: 1.0
-  }
-}
-layer {
-  name: "blob6"
+  name: "blob4"
   type: "Convolution"
-  bottom: "blob4"
-  top: "blob6"
+  bottom: "blob3"
+  top: "blob4"
   param {
     lr_mult: 1.0
   }
@@ -126,7 +108,7 @@ layer {
     num_output: 256
     bias_term: true
     weight_filler {
-      type: "gaussian"
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -135,6 +117,50 @@ layer {
     pad_w: 2
     kernel_h: 5
     kernel_w: 5
+    stride_h: 1
+    stride_w: 1
+    dilation: 1
+  }
+}
+layer {
+  name: "blob5"
+  type: "Pooling"
+  bottom: "blob4"
+  top: "blob5"
+  pooling_param {
+    pool: MAX
+    kernel_h: 3
+    kernel_w: 3
+    stride_h: 2
+    stride_w: 2
+    pad_h: 0
+    pad_w: 0
+  }
+}
+layer {
+  name: "blob6"
+  type: "Convolution"
+  bottom: "blob5"
+  top: "blob6"
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  convolution_param {
+    num_output: 384
+    bias_term: true
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    pad_h: 1
+    pad_w: 1
+    kernel_h: 3
+    kernel_w: 3
     stride_h: 1
     stride_w: 1
     dilation: 1
@@ -151,30 +177,40 @@ layer {
 }
 layer {
   name: "blob8"
-  type: "Pooling"
+  type: "Convolution"
   bottom: "blob6"
   top: "blob8"
-  pooling_param {
-    pool: MAX
+  param {
+    lr_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+  }
+  convolution_param {
+    num_output: 384
+    bias_term: true
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    pad_h: 1
+    pad_w: 1
     kernel_h: 3
     kernel_w: 3
-    stride_h: 2
-    stride_w: 2
-    pad_h: 0
-    pad_w: 0
+    stride_h: 1
+    stride_w: 1
+    dilation: 1
   }
 }
 layer {
   name: "blob9"
-  type: "LRN"
+  type: "ReLU"
   bottom: "blob8"
   top: "blob8"
-  lrn_param {
-    local_size: 5
-    alpha: 9.99999974738e-05
-    beta: 0.75
-    norm_region: ACROSS_CHANNELS
-    k: 1.0
+  relu_param {
+    negative_slope: 0.0
   }
 }
 layer {
@@ -189,10 +225,10 @@ layer {
     lr_mult: 2.0
   }
   convolution_param {
-    num_output: 384
+    num_output: 256
     bias_term: true
     weight_filler {
-      type: "gaussian"
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -242,10 +278,10 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 512
+    num_output: 256
     bias_term: true
     weight_filler {
-      type: "gaussian"
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -279,10 +315,10 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 512
+    num_output: 128
     bias_term: true
     weight_filler {
-      type: "gaussian"
+      type: "xavier"
     }
     bias_filler {
       type: "constant"
@@ -316,10 +352,10 @@ layer {
     lr_mult: 2.0
   }
   inner_product_param {
-    num_output: 8
+    num_output: 10
     bias_term: true
     weight_filler {
-      type: "gaussian"
+      type: "xavier"
     }
     bias_filler {
       type: "constant"

@@ -6,10 +6,10 @@ class ModelZoo extends React.Component {
   constructor() {
       super();
       this.state = {
-        toDisplay:5,
         toAddPerClick:5,
         Recognition:{ 
                       currentPage:0,
+                      toDisplay:6,
                       models:[
                               ["keras","v3","Inception V3"],
                               ["caffe","GoogleNet","GoogLeNet"],
@@ -21,6 +21,7 @@ class ModelZoo extends React.Component {
                               ["keras","imdb_cnn_lstm","IMDB CNN LSTM"],
                               ["caffe","All_CNN","All CNN"],
                               ["caffe","Caffenet","Caffenet"],
+                              ["caffe","speech_net","Speech Net"],
                               ["caffe","CNDS","CNDS"],
                               ["caffe","Gender","Gender"],
                               ["caffe","Age","Age"],
@@ -32,11 +33,13 @@ class ModelZoo extends React.Component {
                   },
         Detection:{ 
                     currentPage:0,
+                    toDisplay:3,
                     models: [
                               ["caffe","yolo_net","YOLONet"],
                               ["caffe","vanilla","Vanilla CNN"],
+                              ["caffe","R-CNN","R-CNN"],
                               ["caffe","fcn","FCN32 Pascal"],
-                              ["caffe","HED","HED"] 
+                              ["caffe","48Net","48Net"]
                             ]
                   }
       };
@@ -94,7 +97,7 @@ class ModelZoo extends React.Component {
     const recognition = this.state.Recognition.models;
     const detection = this.state.Detection.models;
 
-    const finalRecognitionIndex = this.state.toDisplay + this.state.Recognition.currentPage*this.state.toAddPerClick;
+    const finalRecognitionIndex = this.state.Recognition.toDisplay + this.state.Recognition.currentPage*this.state.toAddPerClick;
     const slicedRecogntion = recognition.slice(startIndex, finalRecognitionIndex);
     const renderRecognition = slicedRecogntion.map((recognition) => {
       return (  
@@ -106,7 +109,7 @@ class ModelZoo extends React.Component {
         );
     });
 
-    const finalDetectionIndex = this.state.toDisplay + this.state.Detection.currentPage*this.state.toAddPerClick;
+    const finalDetectionIndex = this.state.Detection.toDisplay + this.state.Detection.currentPage*this.state.toAddPerClick;
     const slicedDetection = detection.slice(startIndex, finalDetectionIndex);
     const renderDetection = slicedDetection.map((detection) => {
       return (  
@@ -151,15 +154,18 @@ class ModelZoo extends React.Component {
           </div>
 
           <div className="zoo-modal-model">
+          
             <h3 className="zoo-modal-text">Caption</h3>
             <ModelElement importNet={this.props.importNet} framework="caffe" id="CoCo_Caption">CoCo Caption</ModelElement>
+            
             <h3 className="zoo-modal-text">Segmentation</h3>
             <ModelElement importNet={this.props.importNet} framework="caffe" id="fcn2">Semantic Segmentation</ModelElement>
             <br/>
             <ModelElement importNet={this.props.importNet} framework="keras" id="ZF_UNET_224">UNET</ModelElement>
-          </div>
-
-          <div className="zoo-modal-model">
+            
+            <h3 className="zoo-modal-text">Retrieval</h3>
+            <ModelElement importNet={this.props.importNet} framework="caffe" id="siamese_mnist">MNIST Siamese</ModelElement>
+          
             <h3 className="zoo-modal-text">VQA</h3>
             <ModelElement importNet={this.props.importNet} framework="keras" id="VQA">VQA</ModelElement>
             <br/>
