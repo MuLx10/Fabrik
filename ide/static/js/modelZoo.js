@@ -9,6 +9,7 @@ class ModelZoo extends React.Component {
         toAddPerClick:5,
         open:0,
         text:"Load More",
+        arrow:"glyphicon  glyphicon glyphicon-chevron-down",
         Recognition:{ 
                       toDisplay:6,
                       models:[
@@ -73,10 +74,16 @@ class ModelZoo extends React.Component {
 
   handleClick(event){
     if(this.state.open){
-      this.setState({text:"Load More"});
+      this.setState({
+        text:"Load More",
+        arrow:"glyphicon  glyphicon glyphicon-chevron-down"
+      });
     }
     else{
-      this.setState({text:"Load Less"}); 
+      this.setState({
+        text:"Load Less",
+        arrow:"glyphicon  glyphicon glyphicon-chevron-up"
+      }); 
     }
     if (event.target.id =="change")
       this.setState({open:1-this.state.open});
@@ -189,7 +196,7 @@ class ModelZoo extends React.Component {
 
           <button className="import-textbox-button btn btn-default col-md-2 col-md-offset-5"  
               id="change" onClick={this.handleClick}>{this.state.text} 
-            &nbsp;<span className="glyphicon  glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            &nbsp;<span className={this.state.arrow}  aria-hidden="true"></span>
           </button>   
         </div>
       </div>

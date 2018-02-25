@@ -17,7 +17,7 @@ env/
 docs/build/
 
 node_modules/
-
+package-lock.json
 *.pyc
 
 */migrations/
