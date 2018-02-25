@@ -6,20 +6,20 @@ class ModelZoo extends React.Component {
   constructor() {
       super();
       this.state = {
-        toDisplay:3,
-        toAddPerClick:5,
+        toDisplay:5,
+        toAddPerClick:3,
         Recognition:{ 
                       currentPage:0,
                       models:[
                               ["caffe","lenet","MNIST LeNet"],
                               ["caffe","cifar10_full","Cifar10 CNN"],
+                              ["caffe","GoogleNet","GoogLeNet"],
+                              ["keras","v3","Inception V3"],
                               ["caffe","alexnet","AlexNet"],
                               ["caffe","All_CNN","All CNN"],
                               ["caffe","vgg16","VGG 16"],
                               ["caffe","densenet","DenseNet"],
-                              ["caffe","GoogleNet","GoogLeNet"],
                               ["caffe","resnet101","ResNet 101"],
-                              ["keras","v3","Inception V3"],
                               ["caffe","Squeezenet","Squeezenet"],
                               ["caffe","SENet","SENet"],
                               ["keras","imdb_cnn_lstm","IMDB CNN LSTM"]
@@ -28,9 +28,9 @@ class ModelZoo extends React.Component {
         Detection:{ 
                     currentPage:0,
                     models: [
+                              ["caffe","yolo_net","YOLONet"],
                               ["caffe","vanilla","Vanilla CNN"],
                               ["caffe","fcn","FCN32 Pascal"],
-                              ["caffe","yolo_net","YOLONet"],
                               ["caffe","HED","HED"] 
                             ]
                   }
@@ -40,41 +40,46 @@ class ModelZoo extends React.Component {
   }
 
   handleClick(event){
+  
     var id = event.target.id
     if (id == "Recognition")
     {
-        var recognition = this.state.Recognition
-        var used = recognition.currentPage*this.state.toAddPerClick + this.state.toDisplay
-        if(used<=recognition.length)
+        var task = this.state.Recognition
+        var used = task.currentPage*this.state.toAddPerClick;
+        if(used<=task.models.length)
         {
+          task.currentPage = task.currentPage+1
           this.setState({
-            currentPage: this.state.Recognition.currentPage+1
+            Recognition: task
           });
         }
         else
          {
+          task.currentPage = 0
           this.setState({
-            currentPage: 0
+            Recognition:task
           });
         } 
     }
     if (id == "Detection")
     {
-        var detection = this.state.Detection
-        used = detection.currentPage*this.state.toAddPerClick + this.state.toDisplay
-        if(used<=detection.length)
+        task = this.state.Detection;
+        used = task.currentPage*this.state.toAddPerClick ;
+        if(used<=task.models.length)
         {
+          task.currentPage = task.currentPage+1;
           this.setState({
-            currentPage: this.state.Detection.currentPage+1
+            Detection: task
           });
         }
         else
          {
+          task.currentPage = 0;
           this.setState({
-            currentPage: 0
+            Detection: task
           });
         } 
-    }    
+    }   
   }
 
   render() {
@@ -115,14 +120,22 @@ class ModelZoo extends React.Component {
           <div className="zoo-modal-model">
             <h3 className="zoo-modal-text">Recognition</h3>
             {renderRecognition}
+            <button id="Recognition"  onClick={this.handleClick} >
+              <span className="glyphicon  glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            </button>
           </div>
 
           <div className="zoo-modal-model">
             <h3 className="zoo-modal-text">Detection</h3>
               {renderDetection}
+              <button id="Detection" onClick={this.handleClick} >
+                <span className="glyphicon  glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+              </button>
             <h3 className="zoo-modal-text">Retrieval</h3>
               <ModelElement importNet={this.props.importNet} framework="caffe" id="siamese_mnist">MNIST Siamese</ModelElement>
           </div>
+
+
           <div className="zoo-modal-model">
             <h3 className="zoo-modal-text">Seq2Seq</h3>
               <ModelElement importNet={this.props.importNet} framework="keras" id="textGeneration">Text Generation</ModelElement>
@@ -131,6 +144,7 @@ class ModelZoo extends React.Component {
               <br/>
               <ModelElement importNet={this.props.importNet} framework="caffe" id="pix2pix">Pix2Pix</ModelElement>
           </div>
+
           <div className="zoo-modal-model">
             <h3 className="zoo-modal-text">Caption</h3>
             <ModelElement importNet={this.props.importNet} framework="caffe" id="CoCo_Caption">CoCo Caption</ModelElement>
@@ -139,6 +153,7 @@ class ModelZoo extends React.Component {
             <br/>
             <ModelElement importNet={this.props.importNet} framework="keras" id="ZF_UNET_224">UNET</ModelElement>
           </div>
+
           <div className="zoo-modal-model">
             <h3 className="zoo-modal-text">VQA</h3>
             <ModelElement importNet={this.props.importNet} framework="keras" id="VQA">VQA</ModelElement>
@@ -147,11 +162,13 @@ class ModelZoo extends React.Component {
             <br/>
             <ModelElement importNet={this.props.importNet} framework="caffe" id="mlpVQA">VQS</ModelElement>
           </div>
+
         </div>
       </div>
     );
   }
 }
+
 
 ModelZoo.propTypes = {
   importNet: React.PropTypes.func
