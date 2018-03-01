@@ -130,7 +130,7 @@ def get_layer_shape(layer):
     if(layer['info']['type'] in dataLayers):
         return data(layer)
 
-    elif(layer['info']['type'] in ['PrimaryCaps','Convolution', 'Pooling', 'Deconvolution', 'DepthwiseConv']):
+    elif(layer['info']['type'] in ['PrimaryCaps','DigitCap','Convolution', 'Pooling', 'Deconvolution', 'DepthwiseConv']):
         return filter(layer)
 
     elif(layer['info']['type'] in ['InnerProduct', 'Recurrent', 'RNN', 'LSTM', 'Embed']):

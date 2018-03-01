@@ -88,6 +88,9 @@ class Pane extends React.Component {
                       id="PrimaryCaps">PrimaryCaps</PaneElement>
                     <PaneElement setDraggingLayer={this.props.setDraggingLayer}
                       handleClick={this.props.handleClick}
+                      id="DigitCap">DigitCap</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
                       id="Convolution">Convolution</PaneElement>
                     <PaneElement setDraggingLayer={this.props.setDraggingLayer}
                       handleClick={this.props.handleClick}
