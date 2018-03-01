@@ -30,12 +30,12 @@ class Pane extends React.Component {
       return (
         <div className="panel-group" id="menu" role="tablist" aria-multiselectable="true">
               <div className="panel panel-default">
-                <div href="#data" data-toggle="collapse" aria-expanded="false" aria-controls="data" 
+                <div href="#data" data-toggle="collapse" aria-expanded="false" aria-controls="data"
                 className="panel-heading" role="tab"  onClick={() => this.toggleClass('data')}>
                     <a data-parent="#menu"  >
                     <span className="badge sidebar-badge" id="dataLayers"> </span>
                       Data
-                      <span className={this.state.data ? 'glyphicon sidebar-dropdown glyphicon-menu-down': 
+                      <span className={this.state.data ? 'glyphicon sidebar-dropdown glyphicon-menu-down':
                       'glyphicon sidebar-dropdown glyphicon-menu-right'}></span>
                     </a>
                 </div>
@@ -72,17 +72,20 @@ class Pane extends React.Component {
                 </div>
               </div>
               <div className="panel panel-default">
-                <div className="panel-heading" role="tab" data-toggle="collapse"  href="#vision" 
+                <div className="panel-heading" role="tab" data-toggle="collapse"  href="#vision"
                 aria-expanded="false" aria-controls="vision" onClick={() => this.toggleClass('vision')}>
                     <a data-parent="#menu">
                     <span className="badge sidebar-badge" id="visionLayers"> </span>
                       Vision
-                      <span className={this.state.vision ? 'glyphicon sidebar-dropdown glyphicon-menu-down': 
+                      <span className={this.state.vision ? 'glyphicon sidebar-dropdown glyphicon-menu-down':
                       'glyphicon sidebar-dropdown glyphicon-menu-right'} ></span>
                     </a>
                 </div>
                 <div id="vision" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="PrimaryCaps">PrimaryCaps</PaneElement>
                     <PaneElement setDraggingLayer={this.props.setDraggingLayer}
                       handleClick={this.props.handleClick}
                       id="Convolution">Convolution</PaneElement>
@@ -108,13 +111,13 @@ class Pane extends React.Component {
                 </div>
               </div>
               <div className="panel panel-default">
-                <div className="panel-heading" role="tab" data-toggle="collapse"  href="#recurrent" 
+                <div className="panel-heading" role="tab" data-toggle="collapse"  href="#recurrent"
                 aria-expanded="false" aria-controls="recurrent" onClick={() => this.toggleClass('recurrent')}>
-                    
+
                     <a data-parent="#menu" >
                     <span className="badge sidebar-badge" id="recurrentLayers"> </span>
                       Recurrent
-                      <span className={this.state.recurrent ? 'glyphicon sidebar-dropdown glyphicon-menu-down': 
+                      <span className={this.state.recurrent ? 'glyphicon sidebar-dropdown glyphicon-menu-down':
                       'glyphicon sidebar-dropdown glyphicon-menu-right'} ></span>
                     </a>
                 </div>
@@ -136,13 +139,13 @@ class Pane extends React.Component {
                 </div>
               </div>
               <div className="panel panel-default">
-                <div className="panel-heading" role="tab" data-toggle="collapse" href="#utility" 
+                <div className="panel-heading" role="tab" data-toggle="collapse" href="#utility"
                 aria-expanded="false" aria-controls="utility" onClick={() => this.toggleClass('utility')}>
-                    
+
                     <a  data-parent="#menu">
                     <span className="badge sidebar-badge" id="utilityLayers"> </span>
                       Utility
-                      <span className={this.state.utility ? 'glyphicon sidebar-dropdown glyphicon-menu-down': 
+                      <span className={this.state.utility ? 'glyphicon sidebar-dropdown glyphicon-menu-down':
                       'glyphicon sidebar-dropdown glyphicon-menu-right'}></span>
                     </a>
                 </div>
@@ -197,12 +200,12 @@ class Pane extends React.Component {
                 </div>
               </div>
               <div className="panel panel-default">
-                <div data-toggle="collapse"  href="#activation" aria-expanded="false" aria-controls="activation" 
+                <div data-toggle="collapse"  href="#activation" aria-expanded="false" aria-controls="activation"
                 className="panel-heading" role="tab" onClick={() => this.toggleClass('activation')}>
                     <a data-parent="#menu" >
                     <span className="badge sidebar-badge" id="activationLayers"> </span>
                       Activation/Neuron
-                      <span className={this.state.activation ? 'glyphicon sidebar-dropdown glyphicon-menu-down': 
+                      <span className={this.state.activation ? 'glyphicon sidebar-dropdown glyphicon-menu-down':
                       'glyphicon sidebar-dropdown glyphicon-menu-right'} ></span>
                     </a>
                 </div>
@@ -266,12 +269,12 @@ class Pane extends React.Component {
                 </div>
               </div>
               <div className="panel panel-default">
-                <div className="panel-heading" role="tab" data-toggle="collapse" href="#normalization" 
+                <div className="panel-heading" role="tab" data-toggle="collapse" href="#normalization"
                 aria-expanded="false" aria-controls="normalization" onClick={() => this.toggleClass('normalization')}>
                     <a  data-parent="#menu" >
                     <span className="badge sidebar-badge" id="normalizationLayers"> </span>
                       Normalization
-                      <span className={this.state.normalization ? 'glyphicon sidebar-dropdown glyphicon-menu-down': 
+                      <span className={this.state.normalization ? 'glyphicon sidebar-dropdown glyphicon-menu-down':
                       'glyphicon sidebar-dropdown glyphicon-menu-right'} ></span>
                     </a>
                 </div>
@@ -295,7 +298,7 @@ class Pane extends React.Component {
                     <a data-parent="#menu">
                     <span className="badge sidebar-badge" id="commonLayers"> </span>
                       Common
-                      <span className={this.state.common ? 'glyphicon sidebar-dropdown glyphicon-menu-down': 
+                      <span className={this.state.common ? 'glyphicon sidebar-dropdown glyphicon-menu-down':
                       'glyphicon sidebar-dropdown glyphicon-menu-right'} ></span>
                     </a>
                 </div>
@@ -314,14 +317,14 @@ class Pane extends React.Component {
                 </div>
               </div>
               <div className="panel panel-default">
-                <div className="panel-heading" role="tab" data-toggle="collapse"  href="#noise" aria-expanded="false" 
+                <div className="panel-heading" role="tab" data-toggle="collapse"  href="#noise" aria-expanded="false"
                 aria-controls="noise" onClick={() => this.toggleClass('noise')}>
-                    
+
                     <a data-parent="#menu" >
                     <span className="badge sidebar-badge" id="noiseLayers"> </span>
                       Noise
-                      
-                      <span className={this.state.noise ? 'glyphicon sidebar-dropdown glyphicon-menu-down': 
+
+                      <span className={this.state.noise ? 'glyphicon sidebar-dropdown glyphicon-menu-down':
                       'glyphicon sidebar-dropdown glyphicon-menu-right'}></span>
                     </a>
                 </div>
@@ -340,12 +343,12 @@ class Pane extends React.Component {
                 </div>
               </div>
               <div className="panel panel-default">
-                <div className="panel-heading" role="tab" data-toggle="collapse" href="#loss" aria-expanded="false" 
+                <div className="panel-heading" role="tab" data-toggle="collapse" href="#loss" aria-expanded="false"
                 aria-controls="loss" onClick={() => this.toggleClass('loss')}>
                     <a  data-parent="#menu">
                     <span className="badge sidebar-badge" id="lossLayers"> </span>
                       Loss
-                      <span className={this.state.loss ? 'glyphicon sidebar-dropdown glyphicon-menu-down': 
+                      <span className={this.state.loss ? 'glyphicon sidebar-dropdown glyphicon-menu-down':
                       'glyphicon sidebar-dropdown glyphicon-menu-right'} ></span>
                     </a>
                 </div>
@@ -382,12 +385,12 @@ class Pane extends React.Component {
                 </div>
               </div>
               <div className="panel panel-default">
-                <div className="panel-heading" role="tab" data-toggle="collapse" href="#wrapper" aria-expanded="false" 
+                <div className="panel-heading" role="tab" data-toggle="collapse" href="#wrapper" aria-expanded="false"
                 aria-controls="wrapper" onClick={() => this.toggleClass('wrapper')}>
                     <a  data-parent="#menu">
                     <span className="badge sidebar-badge" id="wrapperLayers"> </span>
                       Wrapper
-                      <span className={this.state.wrapper ? 'glyphicon sidebar-dropdown glyphicon-menu-down': 
+                      <span className={this.state.wrapper ? 'glyphicon sidebar-dropdown glyphicon-menu-down':
                       'glyphicon sidebar-dropdown glyphicon-menu-right'} ></span>
                     </a>
                 </div>

@@ -90,6 +90,37 @@ def DummyData(layer):
 
 
 # ********** Vision Layers **********
+def PrimaryCaps(layer):
+    params = {}
+    if len(layer.convolution_param.kernel_size):
+        params['kernel_h'] = layer.convolution_param.kernel_size[0]
+        params['kernel_w'] = layer.convolution_param.kernel_size[0]
+    if layer.convolution_param.kernel_w:
+        params['kernel_w'] = layer.convolution_param.kernel_w
+    if layer.convolution_param.kernel_h:
+        params['kernel_h'] = layer.convolution_param.kernel_h
+    if len(layer.convolution_param.pad):
+        params['pad_h'] = layer.convolution_param.pad[0]
+        params['pad_w'] = layer.convolution_param.pad[0]
+    if layer.convolution_param.pad_w:
+        params['pad_w'] = layer.convolution_param.pad_w
+    if layer.convolution_param.pad_h:
+        params['pad_h'] = layer.convolution_param.pad_h
+    if len(layer.convolution_param.stride):
+        params['stride_h'] = layer.convolution_param.stride_h \
+            or layer.convolution_param.stride[0]
+        params['stride_w'] = layer.convolution_param.stride_w \
+            or layer.convolution_param.stride[0]
+    if len(layer.convolution_param.dilation):
+        params['dilation_h'] = layer.convolution_param.dilation[0]
+        params['dilation_w'] = layer.convolution_param.dilation[0]
+    params['weight_filler'] = layer.convolution_param.weight_filler.type
+    params['bias_filler'] = layer.convolution_param.bias_filler.type
+    params['num_output'] = layer.convolution_param.num_output
+    params['use_bias'] = layer.convolution_param.bias_term
+    params['layer_type'] = '2D'
+    return params
+    
 def Convolution(layer):
     params = {}
     if len(layer.convolution_param.kernel_size):

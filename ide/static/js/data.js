@@ -519,6 +519,178 @@ export default {
     learn: false
   },
   /* ********** Vision Layers ********** */
+  PrimaryCaps: {
+    name: 'PrimaryCaps',
+    color: '#3f51b5',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      layer_type: { // Only Keras
+        name: 'Type',
+        value: '3D',
+        type: 'select',
+        options: ['1D', '2D', '3D'],
+        required: false
+      },
+      num_output: { // Maps to: filters(Keras)
+        name: 'No of outputs',
+        value: '',
+        type: 'number',
+        required: true
+      },
+      pad_h: {
+        name: 'Padding height',
+        value: 0,
+        type: 'number',
+        required: false
+      },
+      pad_w: {
+        name: 'Padding width',
+        value: 0,
+        type: 'number',
+        required: false
+      },
+      pad_d: {
+        name: 'Padding depth',
+        value: 0,
+        type: 'number',
+        required: false
+      },
+      kernel_h: {
+        name: 'Kernel height',
+        value: '',
+        type: 'number',
+        required: false
+      },
+      kernel_w: {
+        name: 'Kernel width',
+        value: '',
+        type: 'number',
+        required: true
+      },
+      kernel_d: {
+        name: 'Kernel depth',
+        value: '',
+        type: 'number',
+        required: false
+      },
+      stride_h: {
+        name: 'Stride height',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      stride_w: {
+        name: 'Stride width',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      stride_d: {
+        name: 'Stride depth',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      dilation_h: {
+        name: 'Dilation height',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      dilation_w: {
+        name: 'Dilation width',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      dilation_d: {
+        name: 'Dilation depth',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      weight_filler: { // Maps to: kernel_initializer(Keras)
+        name: 'Weight filler',
+        value: 'constant',
+        type: 'select',
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      bias_filler: { // Maps to: bias_initializer(Keras)
+        name: 'Bias filler',
+        value: 'constant',
+        type: 'select',
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      kernel_regularizer: { // Only Keras
+        name: 'Kernel regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      bias_regularizer: { // Only Keras
+        name: 'Bias regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      activity_regularizer: { // Only Keras
+        name: 'Activity regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      kernel_constraint: { // Only Keras
+        name: 'Kernel constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      bias_constraint: { // Only Keras
+        name: 'Bias constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      use_bias: { // Maps to: bias_term(Caffe)
+        name: 'Use bias term',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: true
+  },
   Convolution: {
     name: 'conv',
     color: '#3f51b5',
@@ -1431,7 +1603,7 @@ export default {
         name: 'Recurrent Initializer',
         value: 'Orthogonal',
         type: 'select',
-        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 
+        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal',
           'VarianceScaling', 'Orthogonal', 'Identity', 'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
       },
@@ -1577,7 +1749,7 @@ export default {
         name: 'Recurrent Initializer',
         value: 'Orthogonal',
         type: 'select',
-        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 
+        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal',
           'VarianceScaling', 'Orthogonal', 'Identity', 'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
       },
@@ -1723,7 +1895,7 @@ export default {
         name: 'Recurrent Initializer',
         value: 'Orthogonal',
         type: 'select',
-        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 
+        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal',
           'VarianceScaling', 'Orthogonal', 'Identity', 'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
       },
@@ -2200,7 +2372,7 @@ export default {
         name: 'Moving Mean Initializer',
         value: 'Zeros',
         type: 'select',
-        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity', 
+        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
         'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
       },
@@ -2435,7 +2607,7 @@ export default {
     },
     learn: false
   },
-  ThresholdedReLU: { 
+  ThresholdedReLU: {
     name: 'Thresholded ReLU',
     color: '#009688',
     endpoint: {
