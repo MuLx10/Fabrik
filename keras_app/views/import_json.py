@@ -6,7 +6,7 @@ from urlparse import urlparse
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from layers_import import Input, Convolution, Deconvolution, Pooling, Dense, Dropout, Embed,\
+from layers_import import Input,PrimaryCaps, Convolution, Deconvolution, Pooling, Dense, Dropout, Embed,\
     Recurrent, BatchNorm, Activation, LeakyReLU, PReLU, ELU, Scale, Flatten, Reshape, Concat, \
     Eltwise, Padding, Upsample, LocallyConnected, ThresholdedReLU, Permute, RepeatVector,\
     ActivityRegularization, Masking, GaussianNoise, GaussianDropout, AlphaDropout, \
@@ -68,6 +68,7 @@ def import_json(request):
         'RepeatVector': RepeatVector,
         'ActivityRegularization': ActivityRegularization,
         'Masking': Masking,
+        'PrimaryCaps':PrimaryCaps,
         'Conv1D': Convolution,
         'Conv2D': Convolution,
         'Conv2DTranspose': Deconvolution,

@@ -7,7 +7,7 @@ from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from keras.models import Model
-from layers_export import data, convolution, deconvolution, pooling, dense, dropout, embed,\
+from layers_export import data, PrimaryCaps, convolution, deconvolution, pooling, dense, dropout, embed,\
     recurrent, batch_norm, activation, flatten, reshape, eltwise, concat, upsample, locally_connected,\
     permute, repeat_vector, regularization, masking, gaussian_noise, gaussian_dropout, alpha_dropout, \
     bidirectional, time_distributed
@@ -52,6 +52,7 @@ def export_json(request, is_tf=False):
             'RepeatVector': repeat_vector,
             'Regularization': regularization,
             'Masking': masking,
+            'PrimaryCaps':PrimaryCaps,
             'Convolution': convolution,
             'Deconvolution': deconvolution,
             'Upsample': upsample,
@@ -127,6 +128,7 @@ def export_json(request, is_tf=False):
                     return False
             return True
 
+
         # Finding the data layer
         for layerId in net:
             processedLayer[layerId] = False
@@ -139,6 +141,7 @@ def export_json(request, is_tf=False):
                 inputLayerId.append(layerId)
             if (not net[layerId]['connection']['output']):
                 outputLayerId.append(layerId)
+
         if len(error):
             return JsonResponse(
                 {'result': 'error', 'error': 'Cannot convert ' + ', '.join(error) + ' to Keras'})

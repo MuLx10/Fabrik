@@ -286,20 +286,18 @@ def export_DummyData(layerId, layerParams, layerPhase, ns_train, ns_test, blobNa
 
 def export_PrimaryCaps(layerId, layerParams, layerPhase, ns_train, ns_test, blobNames):
     convolution_param = {}
-    if layerParams['kernel_h'] != '':
-        convolution_param['kernel_h'] = int(float(layerParams['kernel_h']))
-    if layerParams['kernel_w'] != '':
-        convolution_param['kernel_w'] = int(float(layerParams['kernel_w']))
-    if layerParams['stride_h'] != '':
-        convolution_param['stride_h'] = int(float(layerParams['stride_h']))
-    if layerParams['stride_w'] != '':
-        convolution_param['stride_w'] = int(float(layerParams['stride_w']))
-    if layerParams['num_output'] != '':
-        convolution_param['num_output'] = int(float(layerParams['num_output']))
+    if layerParams['kernel_size'] != '':
+        convolution_param['kernel_size'] = int(float(layerParams['kernel_size']))
+    if layerParams['strides'] != '':
+        convolution_param['strides'] = int(float(layerParams['strides']))
     if layerParams['pad_h'] != '':
         convolution_param['pad_h'] = int(float(layerParams['pad_h']))
     if layerParams['pad_w'] != '':
         convolution_param['pad_w'] = int(float(layerParams['pad_w']))
+    if layerParams['num_output'] != '':
+        convolution_param['num_output'] = int(float(layerParams['num_output']))
+    else:
+        convolution_param['num_output'] = 0
     if layerParams['weight_filler'] != '':
         convolution_param['weight_filler'] = {}
         try:
@@ -317,8 +315,9 @@ def export_PrimaryCaps(layerId, layerParams, layerPhase, ns_train, ns_test, blob
     convolution_param['dilation'] = layerParams['dilation_h']
     convolution_param['bias_term'] = layerParams['use_bias']
     for ns in (ns_train, ns_test):
-        caffeLayer = get_iterable(L.Convolution(
-            *[ns[x] for x in blobNames[layerId]['bottom']],
+        print(blobNames[layerId]['bottom'])
+
+        caffeLayer = get_iterable(L.Convolution(*[ns[x] for x in blobNames[layerId]['bottom']],
             convolution_param=convolution_param,
             param=[
                 {
@@ -412,6 +411,8 @@ def export_Convolution(layerId, layerParams, layerPhase, ns_train, ns_test, blob
             convolution_param['bias_filler']['type'] = layerParams['bias_filler']
     convolution_param['dilation'] = layerParams['dilation_h']
     convolution_param['bias_term'] = layerParams['use_bias']
+    
+
     for ns in (ns_train, ns_test):
         caffeLayer = get_iterable(L.Convolution(
             *[ns[x] for x in blobNames[layerId]['bottom']],
@@ -426,6 +427,7 @@ def export_Convolution(layerId, layerParams, layerPhase, ns_train, ns_test, blob
             ]))
         for key, value in zip(blobNames[layerId]['top'], caffeLayer):
             ns[key] = value
+
     return ns_train, ns_test
 
 

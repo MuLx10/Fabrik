@@ -519,6 +519,8 @@ export default {
     learn: false
   },
   /* ********** Vision Layers ********** */
+  //filters=dim_capsule*n_channels, kernel_size=kernel_size, strides=strides, padding=padding,name='primarycap_conv2d'
+  //conv1, dim_capsule=8, n_channels=32, kernel_size=9, strides=2, padding='valid'
   PrimaryCaps: {
     name: 'PrimaryCaps',
     color: '#3f51b5',
@@ -529,7 +531,7 @@ export default {
     params: {
       layer_type: { // Only Keras
         name: 'Type',
-        value: '3D',
+        value: '2D',
         type: 'select',
         options: ['1D', '2D', '3D'],
         required: false
@@ -537,6 +539,18 @@ export default {
       num_output: { // Maps to: filters(Keras)
         name: 'No of outputs',
         value: '',
+        type: 'number',
+        required: false
+      },
+      dim_capsule: { // Maps to: filters(Keras)
+        name: 'Dimensions of Capsule',
+        value: 8,
+        type: 'number',
+        required: true
+      },
+      n_channels: { // Maps to: filters(Keras)
+        name: 'Number of Channels',
+        value: 32,
         type: 'number',
         required: true
       },
@@ -560,13 +574,13 @@ export default {
       },
       kernel_h: {
         name: 'Kernel height',
-        value: '',
+        value: 9,
         type: 'number',
-        required: false
+        required: true
       },
       kernel_w: {
         name: 'Kernel width',
-        value: '',
+        value: 9,
         type: 'number',
         required: true
       },
@@ -584,7 +598,7 @@ export default {
       },
       stride_w: {
         name: 'Stride width',
-        value: 1,
+        value: 2,
         type: 'number',
         required: false
       },

@@ -15,6 +15,7 @@ from keras.layers.advanced_activations import LeakyReLU, PReLU, ELU, Thresholded
 from keras.layers import BatchNormalization
 from keras.layers import GaussianNoise, GaussianDropout, AlphaDropout
 from keras.layers import Input
+from keras.layers import Reshape,Lambda
 from keras.layers import TimeDistributed, Bidirectional
 from keras import regularizers
 
@@ -169,6 +170,88 @@ def masking(layer, layer_in, layerId, tensor=True):
 
 
 # ********** Convolution Layers **********
+
+def PrimaryCaps(layer, layer_in, layerId, tensor=True):
+    convMap = {
+        '1D': Conv1D,
+        '2D': Conv2D,
+        '3D': Conv3D
+    }
+    out = {}
+    padding = get_padding(layer)
+    if (layer['params']['weight_filler'] in fillerMap):
+        kernel_initializer = fillerMap[layer['params']['weight_filler']]
+    else:
+        kernel_initializer = layer['params']['weight_filler']
+    if (layer['params']['bias_filler'] in fillerMap):
+        bias_initializer = fillerMap[layer['params']['bias_filler']]
+    else:
+        bias_initializer = layer['params']['bias_filler']
+
+    filters = layer['params']['n_channels']*layer['params']['dim_capsule']
+    layer['params']['num_output'] = filters
+
+    kernel_regularizer = regularizerMap[layer['params']['kernel_regularizer']]
+    bias_regularizer = regularizerMap[layer['params']['bias_regularizer']]
+    activity_regularizer = regularizerMap[layer['params']
+                                          ['activity_regularizer']]
+    kernel_constraint = constraintMap[layer['params']['kernel_constraint']]
+    bias_constraint = constraintMap[layer['params']['bias_constraint']]
+    use_bias = layer['params']['use_bias']
+    layer_type = layer['params']['layer_type']
+    if (layer_type == '1D'):
+        strides = layer['params']['stride_w']
+        kernel = layer['params']['kernel_w']
+        dilation_rate = layer['params']['dilation_w']
+        if (padding == 'custom'):
+            p_w = layer['params']['pad_w']
+            out[layerId + 'Pad'] = ZeroPadding1D(padding=p_w)(*layer_in)
+            padding = 'valid'
+            layer_in = [out[layerId + 'Pad']]
+    elif (layer_type == '2D'):
+        strides = (layer['params']['stride_h'], layer['params']['stride_w'])
+        kernel = (layer['params']['kernel_h'], layer['params']['kernel_w'])
+        dilation_rate = (layer['params']['dilation_h'],
+                         layer['params']['dilation_w'])
+        if (padding == 'custom'):
+            p_h, p_w = layer['params']['pad_h'], layer['params']['pad_w']
+            out[layerId + 'Pad'] = ZeroPadding2D(padding=(p_h, p_w))(*layer_in)
+            padding = 'valid'
+            layer_in = [out[layerId + 'Pad']]
+    else:
+        strides = (layer['params']['stride_h'], layer['params']['stride_w'],
+                   layer['params']['stride_d'])
+        kernel = (layer['params']['kernel_h'], layer['params']['kernel_w'],
+                  layer['params']['kernel_d'])
+        dilation_rate = (layer['params']['dilation_h'], layer['params']['dilation_w'],
+                         layer['params']['dilation_d'])
+        if (padding == 'custom'):
+            p_h, p_w, p_d = layer['params']['pad_h'], layer['params']['pad_w'],\
+                layer['params']['pad_d']
+            out[layerId +
+                'Pad'] = ZeroPadding3D(padding=(p_h, p_w, p_d))(*layer_in)
+            padding = 'valid'
+            layer_in = [out[layerId + 'Pad']]
+
+    out[layerId] = convMap[layer_type](filters=filters, 
+                                       kernel_size=kernel, 
+                                       strides=strides, 
+                                       padding=padding,
+                                       dilation_rate=dilation_rate,
+                                       kernel_initializer=kernel_initializer,
+                                       bias_initializer=bias_initializer,
+                                       kernel_regularizer=kernel_regularizer,
+                                       bias_regularizer=bias_regularizer,
+                                       activity_regularizer=activity_regularizer, use_bias=use_bias,
+                                       bias_constraint=bias_constraint,
+                                       kernel_constraint=kernel_constraint)
+
+    if tensor:
+        out[layerId] = out[layerId](*layer_in)
+        out[layerId] = Reshape(target_shape=[-1, layer['params']['dim_capsule']], name='primarycap_reshape')(out[layerId])
+        out[layerId] = Lambda(squash, name='primarycap_squash')(out[layerId])
+    return out
+
 def convolution(layer, layer_in, layerId, tensor=True):
     convMap = {
         '1D': Conv1D,
@@ -176,6 +259,7 @@ def convolution(layer, layer_in, layerId, tensor=True):
         '3D': Conv3D
     }
     out = {}
+
     padding = get_padding(layer)
     if (layer['params']['weight_filler'] in fillerMap):
         kernel_initializer = fillerMap[layer['params']['weight_filler']]
@@ -703,3 +787,15 @@ def get_padding(layer):
         if (o_h == v_o_h) and (o_w == v_o_w) and (o_d == v_o_d):
             return 'valid'
         return 'custom'
+
+
+def squash(vectors, axis=-1):
+    """
+    The non-linear activation used in Capsule. It drives the length of a large vector to near 1 and small vector to 0
+    :param vectors: some vectors to be squashed, N-dim tensor
+    :param axis: the axis to squash
+    :return: a Tensor with same shape as input vectors
+    """
+    s_squared_norm = K.sum(K.square(vectors), axis, keepdims=True)
+    scale = s_squared_norm / (1 + s_squared_norm) / K.sqrt(s_squared_norm + K.epsilon())
+    return scale * vectors

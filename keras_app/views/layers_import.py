@@ -100,6 +100,56 @@ def Masking(layer):
 
 
 # ********** Convolutional Layers **********
+def PrimaryCaps(layer):
+    params = {}
+    if (layer.__class__.__name__ == 'Conv1D'):
+        params['layer_type'] = '1D'
+        params['kernel_w'] = layer.kernel_size[0]
+        params['stride_w'] = layer.strides[0]
+        params['dilation_w'] = layer.dilation_rate[0]
+        params['pad_w'] = get_padding([params['kernel_w'], -1, -1,
+                                       params['stride_w'], -1, -1],
+                                      layer.input_shape, layer.output_shape,
+                                      layer.padding.lower(), '1D')
+    elif (layer.__class__.__name__ == 'Conv2D'):
+        params['layer_type'] = '2D'
+        params['kernel_h'], params['kernel_w'] = layer.kernel_size
+        params['stride_h'], params['stride_w'] = layer.strides
+        params['dilation_h'], params['dilation_w'] = layer.dilation_rate
+        params['pad_h'], params['pad_w'] = get_padding([params['kernel_w'], params['kernel_h'], -1,
+                                                        params['stride_w'], params['stride_h'], -1],
+                                                       layer.input_shape, layer.output_shape,
+                                                       layer.padding.lower(), '2D')
+    else:
+        params['layer_type'] = '3D'
+        params['kernel_h'], params['kernel_w'], params['kernel_d'] = layer.kernel_size
+        params['stride_h'], params['stride_w'], params['stride_d'] = layer.strides
+        params['dilation_h'], params['dilation_w'], params['dilation_d'] = layer.dilation_rate
+        params['pad_h'], params['pad_w'], params['pad_d'] = get_padding([params['kernel_w'],
+                                                                         params['kernel_h'],
+                                                                         params['kernel_d'],
+                                                                         params['stride_w'],
+                                                                         params['stride_h'],
+                                                                         params['stride_d']],
+                                                                        layer.input_shape,
+                                                                        layer.output_shape,
+                                                                        layer.padding.lower(), '3D')
+    params['weight_filler'] = layer.kernel_initializer.__class__.__name__
+    params['bias_filler'] = layer.bias_initializer.__class__.__name__
+    params['num_output'] = layer.filters
+    if (layer.kernel_regularizer):
+        params['kernel_regularizer'] = layer.kernel_regularizer.__class__.__name__
+    if (layer.bias_regularizer):
+        params['bias_regularizer'] = layer.bias_regularizer.__class__.__name__
+    if (layer.activity_regularizer):
+        params['activity_regularizer'] = layer.activity_regularizer.__class__.__name__
+    if (layer.kernel_constraint):
+        params['kernel_constraint'] = layer.kernel_constraint.__class__.__name__
+    if (layer.bias_constraint):
+        params['bias_constraint'] = layer.bias_constraint.__class__.__name__
+    params['use_bias'] = layer.use_bias
+    return jsonLayer('Convolution', params, layer)
+
 def Convolution(layer):
     params = {}
     if (layer.__class__.__name__ == 'Conv1D'):
