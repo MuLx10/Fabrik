@@ -58,6 +58,8 @@ class ModelZoo extends React.Component {
             <h3 className="zoo-modal-text">Segmentation</h3>
             <ModelElement importNet={this.props.importNet} framework="caffe" id="fcn2">Semantic Segmentation</ModelElement>
             <br/>
+            <ModelElement importNet={this.props.importNet} framework="keras" id="segnet">SegNet</ModelElement>
+            <br/>
             <ModelElement importNet={this.props.importNet} framework="keras" id="ZF_UNET_224">UNET</ModelElement>
           </div>
           <div className="zoo-modal-model">
