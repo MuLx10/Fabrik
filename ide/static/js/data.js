@@ -536,12 +536,7 @@ export default {
         options: ['1D', '2D', '3D'],
         required: false
       },
-      num_output: { // Maps to: filters(Keras)
-        name: 'No of outputs',
-        value: '',
-        type: 'number',
-        required: false
-      },
+    
       dim_capsule: { // Maps to: filters(Keras)
         name: 'Dimensions of Capsule',
         value: 8,
@@ -574,13 +569,13 @@ export default {
       },
       kernel_h: {
         name: 'Kernel height',
-        value: 9,
+        value: 3,
         type: 'number',
         required: true
       },
       kernel_w: {
         name: 'Kernel width',
-        value: 9,
+        value: 3,
         type: 'number',
         required: true
       },
@@ -623,6 +618,12 @@ export default {
       dilation_d: {
         name: 'Dilation depth',
         value: 1,
+        type: 'number',
+        required: false
+      },
+      num_output: { // Maps to: filters(Keras)
+        name: 'No of outputs',
+        value: 256,
         type: 'number',
         required: false
       },

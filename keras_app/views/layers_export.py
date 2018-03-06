@@ -1,5 +1,4 @@
 import numpy as np
-
 from keras.layers import Dense, Activation, Dropout, Flatten, Reshape, Permute, RepeatVector
 from keras.layers import ActivityRegularization, Masking
 from keras.layers import Conv1D, Conv2D, Conv3D, Conv2DTranspose
@@ -17,6 +16,7 @@ from keras.layers import GaussianNoise, GaussianDropout, AlphaDropout
 from keras.layers import Input
 from keras.layers import Reshape,Lambda
 from keras.layers import TimeDistributed, Bidirectional
+import keras.backend as K
 from keras import regularizers
 
 fillerMap = {
