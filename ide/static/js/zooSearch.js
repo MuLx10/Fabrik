@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Card from './card';
 import ModelElement from './modelElement';
 
 class ZooSearch extends React.Component {
@@ -165,11 +166,13 @@ class ZooSearch extends React.Component {
     var renderSearch = [];
     for(var i=0; i<category.length; i++){
       renderSearch.push(
-        <div>
-          <ModelElement importNet = {this.props.importNet} framework =
-                      {category[i][0]} id = {category[i][1]}> {category[i][2]} </ModelElement>
-          <br/>
-        </div>
+        
+          <ModelElement importNet = {this.props.importNet} framework = {category[i][0]} id = {category[i][1]}> 
+              <Card imgSrc="https://facebook.github.io/react-native/docs/assets/favicon.png"
+                    name = {category[i][2]}>
+              </Card>
+          </ModelElement>
+        
         );
     }
 
@@ -180,7 +183,6 @@ class ZooSearch extends React.Component {
             <h1 className="zoo-modal-text">Load From Zoo</h1>
             <input className="zoo-textbox-input" ref='searchBar' onChange={this.handleSearch.bind(this)} type="text" placeholder="Search..." />
             <h3 className="zoo-modal-text">Search Result</h3>
-            <br/>
             <h4 className="zoo-modal-text">{this.state.frequentText}</h4>
             {renderSearch}
           </div> 
