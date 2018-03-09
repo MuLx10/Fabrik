@@ -10,7 +10,7 @@ class ZooSearch extends React.Component {
       this.state = {
         open:1,
         text:"Back",
-        frequentText:"Frequently-used : ",
+        searchText:"Frequently Used",
         searchResult:[
                       ["keras","v3","Inception V3"],
                       ["caffe","GoogleNet","GoogLeNet"],
@@ -96,61 +96,91 @@ class ZooSearch extends React.Component {
     var word = bar.value;
     var result = [];
 
+    this.setState({searchText:"Search Result"});
+
     if(word ==""){
-      this.setState({frequentText:"Frequently-used"});
-      result.push(["keras","v3","Inception V3"]);
-      result.push(["caffe","GoogleNet","GoogLeNet"]);
-      result.push(["caffe","alexnet","AlexNet"]);
-      result.push(["caffe","yolo_net","YOLONet"]);
-      result.push(["keras","textGeneration","Text Generation"]);
+
+      var allRecognition = this.state.Recognition.models;
+      for(var i=0; i<allRecognition.length; i++){       
+          result.push(allRecognition[i]);
+      }
+
+      var allDetection = this.state.Detection.models;
+      for(i=0; i<allDetection.length; i++){
+          result.push(allDetection[i]);
+      }
+
+      var allSeq2Seq = this.state.Seq2Seq.models;
+      for(i=0; i<allSeq2Seq.length; i++){
+          result.push(allSeq2Seq[i]);
+      }
+
+      var allVQA = this.state.VQA.models;
+      for(i=0; i<allVQA.length; i++){
+         result.push(allVQA[i]);
+      }
+
+      var allSegmentation = this.state.Segmentation.models;
+      for(i=0; i<allSegmentation.length; i++){
+         result.push(allSegmentation[i]);
+      }
+
+      var allRetrieval = this.state.Retrieval.models;
+      for(i=0; i<allRetrieval.length; i++){
+          result.push(allRetrieval[i]);
+      }
+
+      var allCaption = this.state.Caption.models;
+      for(i=0; i<allCaption.length; i++){
+          result.push(allCaption[i]);
+      }
       this.setState({searchResult:result});
     }
     else{
       word = word.toLowerCase();
-      this.setState({frequentText:""});
-      var allRecognition = this.state.Recognition.models;
-      for(var i=0; i<allRecognition.length; i++){
+      allRecognition = this.state.Recognition.models;
+      for(i=0; i<allRecognition.length; i++){
         if(allRecognition[i][2].toLowerCase().indexOf(word)!=-1){
           result.push(allRecognition[i]);
         }
       }
 
-      var allDetection = this.state.Detection.models;
+      allDetection = this.state.Detection.models;
       for(i=0; i<allDetection.length; i++){
         if(allDetection[i][2].toLowerCase().indexOf(word)!=-1){
           result.push(allDetection[i]);
         }
       }
 
-      var allSeq2Seq = this.state.Seq2Seq.models;
+      allSeq2Seq = this.state.Seq2Seq.models;
       for(i=0; i<allSeq2Seq.length; i++){
         if(allSeq2Seq[i][2].toLowerCase().indexOf(word)!=-1){
           result.push(allSeq2Seq[i]);
         }
       }
 
-      var allVQA = this.state.VQA.models;
+      allVQA = this.state.VQA.models;
       for(i=0; i<allVQA.length; i++){
        if(allVQA[i][2].toLowerCase().indexOf(word)!=-1){
          result.push(allVQA[i]);
        }
       }
 
-      var allSegmentation = this.state.Segmentation.models;
+      allSegmentation = this.state.Segmentation.models;
       for(i=0; i<allSegmentation.length; i++){
        if(allSegmentation[i][2].toLowerCase().indexOf(word)!=-1){
          result.push(allSegmentation[i]);
         }
       }
 
-      var allRetrieval = this.state.Retrieval.models;
+      allRetrieval = this.state.Retrieval.models;
       for(i=0; i<allRetrieval.length; i++){
         if(allRetrieval[i][2].toLowerCase().indexOf(word)!=-1){
           result.push(allRetrieval[i]);
         }
       }
 
-      var allCaption = this.state.Caption.models;
+      allCaption = this.state.Caption.models;
       for(i=0; i<allCaption.length; i++){
         if(allCaption[i][2].toLowerCase().indexOf(word)!=-1){
           result.push(allCaption[i]);
@@ -182,8 +212,7 @@ class ZooSearch extends React.Component {
           <div className="zoo-modal-model">
             <h1 className="zoo-modal-text">Load From Zoo</h1>
             <input className="zoo-textbox-input" ref='searchBar' onChange={this.handleSearch.bind(this)} type="text" placeholder="Search..." />
-            <h3 className="zoo-modal-text">Search Result</h3>
-            <h4 className="zoo-modal-text">{this.state.frequentText}</h4>
+            <h3 className="zoo-modal-text">{this.state.searchText}</h3>
             {renderSearch}
           </div> 
 
