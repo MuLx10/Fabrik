@@ -9,6 +9,7 @@ import data from './data';
 import netLayout from './netLayout_vertical';
 import Modal from 'react-modal';
 import ModelZoo from './modelZoo';
+import ZooSearch from './zooSearch';
 import ImportTextbox from './importTextbox';
 import UrlImportModal from './urlImportModal';
 import $ from 'jquery'
@@ -73,6 +74,7 @@ class Content extends React.Component {
     this.loadDb = this.loadDb.bind(this);
     this.infoModal = this.infoModal.bind(this);
     this.toggleSidebar = this.toggleSidebar.bind(this);
+    this.zooSearch = this.zooSearch.bind(this);
     this.zooModal = this.zooModal.bind(this);
     this.textboxModal = this.textboxModal.bind(this);
     this.urlModal = this.urlModal.bind(this);
@@ -860,9 +862,16 @@ class Content extends React.Component {
     $('#sidebar').toggleClass('visible');
     $('.sidebar-button').toggleClass('close');
   }
-  zooModal() {
+  zooSearch() {
+    this.closeModal();
     this.modalHeader = null;
-    this.modalContent = <ModelZoo importNet={this.importNet}/>;
+    this.modalContent = <ZooSearch importNet={this.importNet} zooModal={this.zooModal}/>;
+    this.openModal();
+  }
+  zooModal() {
+    this.closeModal();
+    this.modalHeader = null;
+    this.modalContent = <ModelZoo importNet={this.importNet} zooSearch={this.zooSearch}/>;
     this.openModal();
   }
   setModelFramework(e) {
