@@ -194,11 +194,12 @@ class ZooSearch extends React.Component {
   render() {
     var category = this.state.searchResult;
     var renderSearch = [];
+    var img_url="";
     for(var i=0; i<category.length; i++){
+      img_url='./../static/img/models/'+category[i][1]+'.png';
       renderSearch.push(
-        
           <ModelElement importNet = {this.props.importNet} framework = {category[i][0]} id = {category[i][1]}> 
-              <Card imgSrc="https://facebook.github.io/react-native/docs/assets/favicon.png"
+              <Card imgSrc = {img_url}
                     name = {category[i][2]}>
               </Card>
           </ModelElement>
