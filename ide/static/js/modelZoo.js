@@ -164,7 +164,9 @@ class ModelZoo extends React.Component {
         <div className="centered-zoo-modal">
           <div className="zoo-modal-model">
             <h3 className="zoo-modal-text">Recognition</h3>
+
             {renderRecognition}
+
           </div>
 
           <div className="zoo-modal-model">
