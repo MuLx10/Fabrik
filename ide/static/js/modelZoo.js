@@ -38,6 +38,8 @@ class ModelZoo extends React.Component {
               <br/>
               <ModelElement importNet={this.props.importNet} framework="caffe" id="fcn">FCN32 Pascal</ModelElement>
               <br/>
+              <ModelElement importNet={this.props.importNet} framework="keras" id="YOLOv3">YOLOv3</ModelElement>
+              <br/>
               <ModelElement importNet={this.props.importNet} framework="caffe" id="yolo_net">YOLONet</ModelElement>
               <br/>
               <ModelElement importNet={this.props.importNet} framework="caffe" id="tiny_yolo">TinyYOLO</ModelElement>
