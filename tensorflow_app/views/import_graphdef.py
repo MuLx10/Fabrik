@@ -18,6 +18,9 @@ name_map = {'flatten': 'Flatten', 'dropout': 'Dropout',
             'batch': 'BatchNorm', 'add': 'Eltwise', 'mul': 'Eltwise', 'up_sampling2d': 'Upsample',
             'conv2d_transpose': 'Deconvolution'}
 
+intializer_map = {'random_uniform': 'RandomUniform', 'random_normal': 'RandomNormal',
+                  'Const': 'Constant', 'zeros': 'Zeros', 'ones': 'Ones',
+                'eye': 'Identity', 'truncated_normal': 'TruncatedNormal'}
 
 def get_layer_name(node_name):
     i = node_name.find('/')
@@ -32,6 +35,8 @@ def get_layer_type(node_name):
     i = node_name.find('_')
     if i == -1:
         name = str(node_name)
+    elif 'conv2d_transpose' in node_name:
+        name = 'conv2d_transpose'
     elif len(node_name.split('_')) > 2:
         name = '_'.join(node_name.split('_')[:-1])
     else:
@@ -156,10 +161,13 @@ def import_graph_def(request):
                 continue
             name = get_layer_name(node.name)
             layer = d[name]
+            if(len(layer['type']) == 0):
+                continue
             if layer['type'][0] == 'Input':
                 # NHWC data format
-                layer['params']['dim'] = str(map(int, [node.get_attr('shape').dim[i].size
-                                                       for i in [0, 1, 2, 3]]))[1:-1]
+                input_dim = node.get_attr('shape').dim
+                layer['params']['dim'] = str(map(int, [dim.size
+                                                    for dim in input_dim]))[1:-1]
 
             elif layer['type'][0] == 'Convolution':
                 if str(node.name) == name + '/weights' or str(node.name) == name + '/kernel':
@@ -183,6 +191,7 @@ def import_graph_def(request):
                     except TypeError:
                         return JsonResponse({'result': 'error', 'error':
                                              'Missing shape info in GraphDef'})
+            
             elif layer['type'][0] == 'Deconvolution':
                 if str(node.name) == name + '/weights' or str(node.name) == name + '/kernel':
                     layer['params']['kernel_h'] = int(
@@ -191,12 +200,19 @@ def import_graph_def(request):
                         node.get_attr('shape').dim[1].size)
                     layer['params']['num_output'] = int(
                         node.get_attr('shape').dim[3].size)
+                if re.match('.*/kernel/Initializer.*', str(node.name)):
+                    w_filler = str(node.name).split('/')[3]
+                    layer['params']['weight_filler'] = intializer_map[w_filler]
+                if re.match('.*/bias/Initializer.*', str(node.name)):
+                    b_filler = str(node.name).split('/')[3]
+                    layer['params']['bias_filler'] = intializer_map[b_filler]
                 if str(node.type) == 'Conv2D':
                     layer['params']['stride_h'] = int(
                         node.get_attr('strides')[1])
                     layer['params']['stride_w'] = int(
                         node.get_attr('strides')[2])
                     layer['params']['layer_type'] = '2D'
+
                     try:
                         layer['params']['pad_h'], layer['params']['pad_w'] = \
                             get_padding(node, layer)
@@ -323,6 +339,8 @@ def import_graph_def(request):
         net = {}
         batch_norms = []
         for key in d.keys():
+            if(len(d[key]['type']) == 0):
+                continue
             if d[key]['type'][0] == 'BatchNorm' and len(d[key]['input']) > 0 and len(d[key]['output']) > 0:
                 batch_norms.append(key)
 
@@ -340,6 +358,8 @@ def import_graph_def(request):
             d[key] = temp_d_batch[key]
 
         for key in d.keys():
+            if(len(d[key]['type']) == 0):
+                continue
             net[key] = {
                 'info': {
                     'type': d[key]['type'][0],
