@@ -2531,6 +2531,36 @@ export default {
     },
     learn: false
   },
+  Linear: {
+    name: 'linear',
+    color: '#009688',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      inplace: {
+        name: 'Inplace operation',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
   SELU: { // Only Keras
     name: 'selu',
     color: '#009688',
