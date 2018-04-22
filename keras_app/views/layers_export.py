@@ -101,8 +101,6 @@ def activation(layer, layer_in, layerId, tensor=True):
         out[layerId] = Activation('sigmoid')
     elif (layer['info']['type'] == 'TanH'):
         out[layerId] = Activation('tanh')
-    elif (layer['info']['type'] == 'Softmax'):
-        out[layerId] = Activation('softmax')
     elif (layer['info']['type'] == 'SELU'):
         out[layerId] = Activation('selu')
     elif (layer['info']['type'] == 'Softplus'):
@@ -111,6 +109,8 @@ def activation(layer, layer_in, layerId, tensor=True):
         out[layerId] = Activation('softsign')
     elif (layer['info']['type'] == 'HardSigmoid'):
         out[layerId] = Activation('hard_sigmoid')
+    elif (layer['info']['type']):
+        out[layerId] = Activation(layer['info']['type'].lower())
     if tensor:
         out[layerId] = out[layerId](*layer_in)
     return out
