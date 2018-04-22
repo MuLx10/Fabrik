@@ -22,6 +22,10 @@ intializer_map = {'random_uniform': 'RandomUniform', 'random_normal': 'RandomNor
                   'Const': 'Constant', 'zeros': 'Zeros', 'ones': 'Ones',
                 'eye': 'Identity', 'truncated_normal': 'TruncatedNormal'}
 
+activation_map = {'Relu': 'ReLU', 'Elu': 'elu', 'Softsign': 'Softsign',
+                  'Softplus': 'Softplus', 'Sigmoid': 'Sigmoid', 'Tanh': 'TanH',
+                'Softmax': 'softmax', 'SELU': 'SELU'}
+
 def get_layer_name(node_name):
     i = node_name.find('/')
     if i == -1:
@@ -132,6 +136,10 @@ def import_graph_def(request):
                 if layer_type in name_map:
                     if name_map[layer_type] not in d[name]['type']:
                         d[name]['type'].append(name_map[layer_type])
+                if layer_type in activation_map:
+                    if activation_map[layer_type] not in d[name]['type']:
+                        d[name]['type'].append(activation_map[layer_type])
+
             for input_tensor in node.inputs:
                 input_layer_name = get_layer_name(input_tensor.op.name)
                 if input_layer_name != name:
@@ -161,8 +169,6 @@ def import_graph_def(request):
                 continue
             name = get_layer_name(node.name)
             layer = d[name]
-            if(len(layer['type']) == 0):
-                continue
             if layer['type'][0] == 'Input':
                 # NHWC data format
                 input_dim = node.get_attr('shape').dim
@@ -339,8 +345,6 @@ def import_graph_def(request):
         net = {}
         batch_norms = []
         for key in d.keys():
-            if(len(d[key]['type']) == 0):
-                continue
             if d[key]['type'][0] == 'BatchNorm' and len(d[key]['input']) > 0 and len(d[key]['output']) > 0:
                 batch_norms.append(key)
 
@@ -358,18 +362,15 @@ def import_graph_def(request):
             d[key] = temp_d_batch[key]
 
         for key in d.keys():
-            if(len(d[key]['type']) == 0):
-                continue
             net[key] = {
                 'info': {
                     'type': d[key]['type'][0],
                     'phase': None
                 },
                 'connection': {
-                    'input': d[key]['input'],
-                    'output': d[key]['output']
+                    'input': list(set(d[key]['input'])),
+                    'output': list(set(d[key]['output']))
                 },
                 'params': d[key]['params']
             }
-
         return JsonResponse({'result': 'success', 'net': net, 'net_name': ''})
