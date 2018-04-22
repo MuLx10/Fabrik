@@ -15,7 +15,8 @@ op_layer_map = {'Placeholder': 'Input', 'Conv2D': 'Convolution', 'MaxPool': 'Poo
                 'LeakyRelu': 'ReLU', 'Elu': 'ELU', 'Softsign': 'Softsign',
                 'Softplus': 'Softplus'}
 name_map = {'flatten': 'Flatten', 'dropout': 'Dropout',
-            'batch': 'BatchNorm', 'add': 'Eltwise', 'mul': 'Eltwise','up': 'Upsample'}
+            'batch': 'BatchNorm', 'add': 'Eltwise', 'mul': 'Eltwise', 'up_sampling2d': 'Upsample',
+            'conv2d_transpose': 'Deconvolution'}
 
 
 def get_layer_name(node_name):
@@ -31,6 +32,8 @@ def get_layer_type(node_name):
     i = node_name.find('_')
     if i == -1:
         name = str(node_name)
+    elif len(node_name.split('_')) > 2:
+        name = '_'.join(node_name.split('_')[:-1])
     else:
         name = str(node_name[:i])
     return name
@@ -130,7 +133,6 @@ def import_graph_def(request):
                     d[name]['input'].append(input_layer_name)
                     if name not in d[input_layer_name]['output']:
                         d[input_layer_name]['output'].append(name)
-
         # seperating relu layers
         # This logic is only needed for inplace operations, it might be possible to do this
         # in a better way
@@ -181,6 +183,27 @@ def import_graph_def(request):
                     except TypeError:
                         return JsonResponse({'result': 'error', 'error':
                                              'Missing shape info in GraphDef'})
+            elif layer['type'][0] == 'Deconvolution':
+                if str(node.name) == name + '/weights' or str(node.name) == name + '/kernel':
+                    layer['params']['kernel_h'] = int(
+                        node.get_attr('shape').dim[0].size)
+                    layer['params']['kernel_w'] = int(
+                        node.get_attr('shape').dim[1].size)
+                    layer['params']['num_output'] = int(
+                        node.get_attr('shape').dim[3].size)
+                if str(node.type) == 'Conv2D':
+                    layer['params']['stride_h'] = int(
+                        node.get_attr('strides')[1])
+                    layer['params']['stride_w'] = int(
+                        node.get_attr('strides')[2])
+                    layer['params']['layer_type'] = '2D'
+                    try:
+                        layer['params']['pad_h'], layer['params']['pad_w'] = \
+                            get_padding(node, layer)
+                    except TypeError:
+                        return JsonResponse({'result': 'error', 'error':
+                                             'Missing shape info in GraphDef'})
+
             elif layer['type'][0] == 'Upsample':
                 if str(node.name) == name+'/Const':
                     ts = repr(str(node.get_attr('value').tensor_content).encode('utf8')).split('\\x')[1:-1]
