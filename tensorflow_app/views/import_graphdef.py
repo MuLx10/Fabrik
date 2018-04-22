@@ -174,6 +174,7 @@ def import_graph_def(request):
                 # NHWC data format
                 input_dim = node.get_attr('shape').dim
                 layer['params']['dim'] = str(map(int, [dim.size for dim in input_dim]))[1:-1]
+
             elif layer['type'][0] == 'Convolution':
                 if str(node.name) == name + '/weights' or str(node.name) == name + '/kernel':
                     # since conv takes weights as input, this node will be processed first
