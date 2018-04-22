@@ -20,11 +20,12 @@ name_map = {'flatten': 'Flatten', 'dropout': 'Dropout',
 
 intializer_map = {'random_uniform': 'RandomUniform', 'random_normal': 'RandomNormal',
                   'Const': 'Constant', 'zeros': 'Zeros', 'ones': 'Ones',
-                'eye': 'Identity', 'truncated_normal': 'TruncatedNormal'}
+                  'eye': 'Identity', 'truncated_normal': 'TruncatedNormal'}
 
 activation_map = {'Relu': 'ReLU', 'Elu': 'elu', 'Softsign': 'Softsign',
                   'Softplus': 'Softplus', 'Sigmoid': 'Sigmoid', 'Tanh': 'TanH',
-                'Softmax': 'softmax', 'SELU': 'SELU'}
+                  'Softmax': 'softmax', 'SELU': 'SELU'}
+
 
 def get_layer_name(node_name):
     i = node_name.find('/')
@@ -172,9 +173,7 @@ def import_graph_def(request):
             if layer['type'][0] == 'Input':
                 # NHWC data format
                 input_dim = node.get_attr('shape').dim
-                layer['params']['dim'] = str(map(int, [dim.size
-                                                    for dim in input_dim]))[1:-1]
-
+                layer['params']['dim'] = str(map(int, [dim.size for dim in input_dim]))[1:-1]
             elif layer['type'][0] == 'Convolution':
                 if str(node.name) == name + '/weights' or str(node.name) == name + '/kernel':
                     # since conv takes weights as input, this node will be processed first
@@ -197,7 +196,7 @@ def import_graph_def(request):
                     except TypeError:
                         return JsonResponse({'result': 'error', 'error':
                                              'Missing shape info in GraphDef'})
-            
+
             elif layer['type'][0] == 'Deconvolution':
                 if str(node.name) == name + '/weights' or str(node.name) == name + '/kernel':
                     layer['params']['kernel_h'] = int(
