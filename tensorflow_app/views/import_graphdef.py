@@ -236,7 +236,6 @@ def import_graph_def(request):
                 if '2d' in node.name.split('/')[0]:
                     layer['params']['layer_type'] = '2D'
 
-
             elif layer['type'][0] == 'Pooling':
                 if str(node.type) == 'MaxPool':
                     layer['params']['pool'] = 0
