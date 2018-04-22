@@ -15,7 +15,7 @@ op_layer_map = {'Placeholder': 'Input', 'Conv2D': 'Convolution', 'MaxPool': 'Poo
                 'LeakyRelu': 'ReLU', 'Elu': 'ELU', 'Softsign': 'Softsign',
                 'Softplus': 'Softplus'}
 name_map = {'flatten': 'Flatten', 'dropout': 'Dropout',
-            'batch': 'BatchNorm', 'add': 'Eltwise', 'mul': 'Eltwise'}
+            'batch': 'BatchNorm', 'add': 'Eltwise', 'mul': 'Eltwise','up': 'Upsample'}
 
 
 def get_layer_name(node_name):
@@ -181,6 +181,17 @@ def import_graph_def(request):
                     except TypeError:
                         return JsonResponse({'result': 'error', 'error':
                                              'Missing shape info in GraphDef'})
+            elif layer['type'][0] == 'Upsample':
+                if str(node.name) == name+'/Const':
+                    ts = repr(str(node.get_attr('value').tensor_content).encode('utf8')).split('\\x')[1:-1]
+                    ts = [int(x) for x in ts if int(x) > 0]
+
+                    layer['params']['size_h'] = ts[0]
+                    layer['params']['size_w'] = ts[1]
+
+                if '2d' in node.name.split('/')[0]:
+                    layer['params']['layer_type'] = '2D'
+
 
             elif layer['type'][0] == 'Pooling':
                 if str(node.type) == 'MaxPool':
